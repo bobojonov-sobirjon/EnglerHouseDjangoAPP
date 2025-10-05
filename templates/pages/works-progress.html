@@ -1,0 +1,664 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Рабочие процессы - ENGLER House{% endblock %}
+
+{% block header_class %}bg-[#2C2926] h-auto{% endblock %}
+{% block header_style %}{% endblock %}
+
+{% block hero_content %}
+<section class="bg-[#2C2926] pt-32 pb-6 max-md:pt-24 max-md:pb-4">
+    <div class="max-w-[1300px] mx-auto w-full grid grid-cols-1 md:grid-cols-2 px-6 md:px-0">
+        <h1 data-aos="fade-up" class="font-bold text-4xl md:text-[40px] text-white leading-[113%] mb-6 md:mb-0">
+            {{ project.title }}
+        </h1>
+        <div data-aos="fade-up" data-aos-delay="100" class="flex flex-col md:pl-32">
+            <p class="text-base md:text-lg font-medium text-white leading-[134%] mb-8">
+                {{ project.description }}
+            </p>
+            {% if project.model_3d_file %}
+            <button onclick="window.open3DViewer()"
+                class="py-4 px-8 md:px-11 rounded-[8px] bg-[#FFFFFF] text-[#1E1E1E] w-full md:w-max font-bold text-sm flex gap-5 justify-center items-center hover:bg-gray-100 transition-colors">
+                3D-тур проекта
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                    stroke="currentColor" class="size-5">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="m4.5 19.5 15-15m0 0H8.25m11.25 0v11.25" />
+                </svg>
+            </button>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Carousel Section -->
+    {% if carousel_images %}
+    <div class="max-w-[1300px] mx-auto pt-12 md:pt-16 px-6 md:px-0">
+        <div class="relative" data-aos="fade-up">
+            <!-- Carousel Container -->
+            <div class="carousel-container overflow-hidden relative h-[350px] md:h-[750px]">
+                <div class="carousel-track flex transition-transform duration-500 ease-in-out h-full">
+                    {% for image in carousel_images %}
+                    <div class="carousel-slide w-full h-full flex-shrink-0">
+                        <img src="{{ image.image.url }}" alt="{{ project.title }}" class="w-full h-full object-fill scale-[1]">
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Navigation Arrows -->
+            <button onclick="prevSlide()" 
+                class="absolute left-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-[#2C2926] w-12 h-12 rounded-full flex items-center justify-center transition-all shadow-lg z-10">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+                </svg>
+            </button>
+            <button onclick="nextSlide()" 
+                class="absolute right-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-[#2C2926] w-12 h-12 rounded-full flex items-center justify-center transition-all shadow-lg z-10">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+                </svg>
+            </button>
+
+            <!-- Dots Indicator -->
+            <div class="flex justify-center gap-2 mt-4">
+                {% for image in carousel_images %}
+                <button onclick="goToSlide({{ forloop.counter0 }})" 
+                    class="carousel-dot w-3 h-3 rounded-full bg-white/40 hover:bg-white/60 transition-all {% if forloop.first %}!bg-white{% endif %}">
+                </button>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</section>
+{% endblock %}
+
+{% block page_content %}
+<!-- Project Details Section -->
+{% if project_details %}
+<section class="py-8 bg-[#2C2926]">
+    <div class="max-w-[1300px] mx-auto px-6 md:px-0">
+        {% for detail in project_details %}
+        <div class="flex flex-col gap-8 py-8 md:flex-row md:gap-16 {% if not forloop.first %}mt-8{% endif %}">
+            <!-- Image - alternates between left and right on desktop -->
+            <img data-aos="fade-up" {% if forloop.counter > 1 %}data-aos-delay="{{ forloop.counter }}00"{% endif %}
+                src="{{ detail.image.url }}"
+                class="w-full md:w-[544px] h-[280px] md:h-[544px] shrink-0 object-cover rounded-lg {% if forloop.counter|divisibleby:2 %}md:order-2{% else %}md:order-1{% endif %}" 
+                alt="{{ detail.title }}">
+            
+            <!-- Text content -->
+            <div data-aos="fade-up" data-aos-delay="100" 
+                class="flex flex-col justify-center {% if forloop.counter|divisibleby:2 %}md:order-1{% else %}md:order-2{% endif %}">
+                <h2 class="text-white mb-6 md:mb-11 text-3xl md:text-[54px] font-bold">{{ detail.title }}</h2>
+                <p class="text-base md:text-xl font-medium text-white leading-[134%] whitespace-pre-line ">{{ detail.description }}</p>
+                {% if detail.url %}
+                <a href="{{ detail.url }}" target="_blank" 
+                    class="mt-8 inline-flex items-center justify-center gap-3 px-6 py-3 border-2 border-white text-white rounded-lg hover:bg-white hover:text-[#2C2926] transition-all duration-300 font-semibold text-sm md:text-base group w-max">
+                    Узнать больше
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5 group-hover:translate-x-1 transition-transform">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+                    </svg>
+                </a>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+{% endif %}
+
+<!-- Review Form Section -->
+<section class="bg-[#2C2926] py-12 md:py-16">
+    <div class="max-w-[800px] mx-auto px-6 md:px-0">
+        <h2 data-aos="fade-up" class="text-white text-3xl md:text-[50px] font-bold mb-6 md:mb-8 text-center">
+            Оставить отзыв
+        </h2>
+        <p data-aos="fade-up" data-aos-delay="100" class="text-white/80 text-base md:text-lg text-center mb-8 md:mb-12">
+            Поделитесь своим мнением о проекте "{{ project.title }}"
+        </p>
+        
+        <!-- Messages -->
+        {% if messages %}
+        <div class="mb-6">
+            {% for message in messages %}
+            <div class="p-4 rounded-lg mb-4 {% if message.tags == 'success' %}bg-green-500/20 border border-green-500 text-green-100{% elif message.tags == 'error' %}bg-red-500/20 border border-red-500 text-red-100{% else %}bg-blue-500/20 border border-blue-500 text-blue-100{% endif %}">
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        
+        <form method="POST" data-aos="fade-up" data-aos-delay="200" class="bg-[#564F40] p-6 md:p-8 rounded-lg">
+            {% csrf_token %}
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <!-- First Name -->
+                <div>
+                    <label for="first_name" class="block text-white font-semibold mb-2">
+                        Имя <span class="text-red-400">*</span>
+                    </label>
+                    <input 
+                        type="text" 
+                        id="first_name" 
+                        name="first_name" 
+                        required
+                        class="w-full px-4 py-3 rounded-lg bg-[#2C2926] text-white border border-[#564F40] focus:border-white focus:outline-none transition-colors"
+                        placeholder="Введите ваше имя">
+                </div>
+                
+                <!-- Last Name -->
+                <div>
+                    <label for="last_name" class="block text-white font-semibold mb-2">
+                        Фамилия <span class="text-red-400">*</span>
+                    </label>
+                    <input 
+                        type="text" 
+                        id="last_name" 
+                        name="last_name" 
+                        required
+                        class="w-full px-4 py-3 rounded-lg bg-[#2C2926] text-white border border-[#564F40] focus:border-white focus:outline-none transition-colors"
+                        placeholder="Введите вашу фамилию">
+                </div>
+            </div>
+            
+            <!-- Comment -->
+            <div class="mb-6">
+                <label for="comment" class="block text-white font-semibold mb-2">
+                    Ваш отзыв <span class="text-red-400">*</span>
+                </label>
+                <textarea 
+                    id="comment" 
+                    name="comment" 
+                    rows="5" 
+                    required
+                    class="w-full px-4 py-3 rounded-lg bg-[#2C2926] text-white border border-[#564F40] focus:border-white focus:outline-none transition-colors resize-none"
+                    placeholder="Поделитесь своими впечатлениями о проекте..."></textarea>
+            </div>
+            
+            <!-- Submit Button -->
+            <div class="flex justify-center">
+                <button 
+                    type="submit"
+                    class="py-4 px-8 md:px-12 rounded-lg bg-white text-[#2C2926] font-bold text-sm md:text-base hover:bg-gray-100 transition-colors flex items-center gap-3 group">
+                    Отправить отзыв
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5 group-hover:translate-x-1 transition-transform">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" />
+                    </svg>
+                </button>
+            </div>
+            
+            <p class="text-white/60 text-sm text-center mt-6">
+                * Все поля обязательны для заполнения. Отзыв будет опубликован после модерации.
+            </p>
+        </form>
+    </div>
+</section>
+
+<section class="bg-[#564F40] py-12 md:py-0 md:h-[284px]">
+    <div class="max-w-[1300px] mx-auto grid grid-cols-1 md:grid-cols-4 gap-8 md:gap-20 px-6 md:px-0 md:pt-12">
+        <div data-aos="fade-up" class="flex flex-col items-center justify-center">
+            <img src="{% static 'imgs/icons/icon1.svg' %}" alt="" class="w-12 h-12 md:w-auto md:h-auto">
+            <h3 class="mt-4 mb-3 text-lg font-bold text-center text-white md:text-xl">Полный цикл работ</h3>
+            <p class="text-white/70 leading-[140%] text-center text-sm md:text-base">От эскиза до готового
+                интерьера — под ключ</p>
+        </div>
+        <div data-aos="fade-up" data-aos-delay="100" class="flex flex-col items-center justify-center">
+            <img src="{% static 'imgs/icons/icon2.svg' %}" alt="" class="w-12 h-12 md:w-auto md:h-auto">
+            <h3 class="mt-4 mb-3 text-lg font-bold text-center text-white md:text-xl">3D-визуализация</h3>
+            <p class="text-white/70 leading-[140%] text-center text-sm md:text-base">Увидите свой будущий
+                интерьер еще до начала ремонта</p>
+        </div>
+        <div data-aos="fade-up" data-aos-delay="200" class="flex flex-col items-center justify-center">
+            <img src="{% static 'imgs/icons/icon3.svg' %}" alt="" class="w-12 h-12 md:w-auto md:h-auto">
+            <h3 class="mt-4 mb-3 text-lg font-bold text-center text-white md:text-xl">Индивидуальный подход</h3>
+            <p class="text-white/70 leading-[140%] text-center text-sm md:text-base">Интерьер, который отражает
+                именно ваш характер</p>
+        </div>
+        <div data-aos="fade-up" data-aos-delay="300" class="flex flex-col items-center justify-center">
+            <img src="{% static 'imgs/icons/icon4.svg' %}" alt="" class="w-12 h-12 md:w-auto md:h-auto">
+            <h3 class="mt-4 mb-3 text-lg font-bold text-center text-white md:text-xl">Контроль качества</h3>
+            <p class="text-white/70 leading-[140%] text-center text-sm md:text-base">Гарантия, что проект будет
+                реализован точно по плану</p>
+        </div>
+    </div>
+</section>
+
+<!-- 3D Viewer Modal -->
+{% if project.model_3d_file %}
+<div id="3d-viewer-modal" class="hidden fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4">
+    <div class="relative w-full max-w-7xl h-[90vh] bg-[#2C2926] rounded-lg overflow-hidden">
+        <!-- Close Button -->
+        <button onclick="window.close3DViewer()" 
+            class="absolute top-4 right-4 z-10 bg-white/90 hover:bg-white text-[#2C2926] w-12 h-12 rounded-full flex items-center justify-center transition-all shadow-lg">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-6 h-6">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+            </svg>
+        </button>
+        
+        <!-- Loading Indicator -->
+        <div id="3d-loading" class="absolute inset-0 flex items-center justify-center z-20">
+            <div class="text-white text-center">
+                <div class="inline-block animate-spin rounded-full h-12 w-12 border-4 border-white border-t-transparent mb-4"></div>
+                <p class="text-lg font-medium">Загрузка 3D модели...</p>
+                <p id="loading-progress" class="text-sm mt-2">0%</p>
+            </div>
+        </div>
+        
+        <!-- 3D Model Viewer Container -->
+        <div id="3d-viewer-container" class="w-full h-full relative"></div>
+        
+        <!-- Instructions -->
+        <div class="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/70 text-white px-6 py-3 rounded-full text-sm font-medium max-md:text-xs max-md:px-4 max-md:py-2">
+            <div class="flex items-center gap-2 md:gap-4">
+                <span>🖱️ Вращать</span>
+                <span class="hidden md:inline">|</span>
+                <span>🔍 Zoom</span>
+                <span class="hidden md:inline">|</span>
+                <span class="hidden md:inline">✋ Перемещать</span>
+            </div>
+        </div>
+        
+        <!-- Controls -->
+        <div class="absolute top-20 right-4 flex flex-col gap-2">
+            <button onclick="resetCamera()" class="bg-white/90 hover:bg-white text-[#2C2926] w-10 h-10 rounded-full flex items-center justify-center transition-all shadow-lg" title="Сбросить камеру">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
+                </svg>
+            </button>
+            <button onclick="toggleAutoRotate()" class="bg-white/90 hover:bg-white text-[#2C2926] w-10 h-10 rounded-full flex items-center justify-center transition-all shadow-lg" title="Авто вращение">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
+                </svg>
+            </button>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<script>
+// Carousel functionality
+try {
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('.carousel-slide');
+    const dots = document.querySelectorAll('.carousel-dot');
+    const track = document.querySelector('.carousel-track');
+    let autoplayInterval;
+
+    function updateCarousel() {
+        if (!track || slides.length === 0) return;
+        
+        try {
+            track.style.transform = `translateX(-${currentSlide * 100}%)`;
+            
+            dots.forEach((dot, index) => {
+                if (index === currentSlide) {
+                    dot.classList.add('!bg-white');
+                } else {
+                    dot.classList.remove('!bg-white');
+                }
+            });
+        } catch (error) {
+            console.error('Error updating carousel:', error);
+        }
+    }
+
+    window.nextSlide = function() {
+        if (slides.length === 0) return;
+        if (currentSlide < slides.length - 1) {
+            currentSlide++;
+        } else {
+            currentSlide = 0;
+        }
+        updateCarousel();
+    }
+
+    window.prevSlide = function() {
+        if (slides.length === 0) return;
+        if (currentSlide > 0) {
+            currentSlide--;
+        } else {
+            currentSlide = slides.length - 1;
+        }
+        updateCarousel();
+    }
+
+    window.goToSlide = function(index) {
+        if (slides.length === 0) return;
+        currentSlide = index;
+        updateCarousel();
+    }
+
+    // Touch support for mobile
+    const carouselContainer = document.querySelector('.carousel-container');
+    if (carouselContainer) {
+        let touchStartX = 0;
+        let touchEndX = 0;
+        let touchStartY = 0;
+        let touchEndY = 0;
+
+        carouselContainer.addEventListener('touchstart', function(e) {
+            touchStartX = e.changedTouches[0].screenX;
+            touchStartY = e.changedTouches[0].screenY;
+        }, { passive: true });
+
+        carouselContainer.addEventListener('touchend', function(e) {
+            touchEndX = e.changedTouches[0].screenX;
+            touchEndY = e.changedTouches[0].screenY;
+            handleSwipe();
+        }, { passive: true });
+
+        function handleSwipe() {
+            const diffX = touchStartX - touchEndX;
+            const diffY = Math.abs(touchStartY - touchEndY);
+            
+            // Check if horizontal swipe is more significant than vertical
+            if (Math.abs(diffX) > diffY && Math.abs(diffX) > 50) {
+                if (diffX > 0) {
+                    // Swipe left - next slide
+                    window.nextSlide();
+                } else {
+                    // Swipe right - previous slide
+                    window.prevSlide();
+                }
+                
+                // Restart autoplay after swipe
+                if (autoplayInterval) {
+                    clearInterval(autoplayInterval);
+                    {% if carousel_images.count > 1 %}
+                    autoplayInterval = setInterval(window.nextSlide, 3600);
+                    {% endif %}
+                }
+            }
+        }
+    }
+
+    // Auto-play carousel
+    {% if carousel_images.count > 1 %}
+    if (slides.length > 1) {
+        autoplayInterval = setInterval(window.nextSlide, 3600);
+
+        // Pause autoplay on hover (desktop only)
+        if (carouselContainer) {
+            carouselContainer.addEventListener('mouseenter', () => {
+                clearInterval(autoplayInterval);
+            });
+
+            carouselContainer.addEventListener('mouseleave', () => {
+                autoplayInterval = setInterval(window.nextSlide, 3600);
+            });
+        }
+    }
+    {% endif %}
+} catch (error) {
+    console.error('Error initializing carousel:', error);
+}
+</script>
+
+<!-- 3D Viewer functionality -->
+{% if project.model_3d_file %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/OBJLoader.js"></script>
+
+<script>
+(function() {
+    let scene, camera, renderer, controls, model;
+    let isInitialized = false;
+
+    function init3DViewer() {
+        console.log('Initializing 3D viewer...');
+        
+        const container = document.getElementById('3d-viewer-container');
+        if (!container) {
+            console.error('Container not found!');
+            return;
+        }
+        
+        const width = container.clientWidth;
+        const height = container.clientHeight;
+        
+        console.log('Container size:', width, 'x', height);
+        
+        // Scene
+        scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x2C2926);
+        
+        // Camera
+        camera = new THREE.PerspectiveCamera(50, width / height, 0.1, 1000);
+        camera.position.set(0, 1.5, 4);
+        camera.lookAt(0, 0, 0);
+        
+        // Renderer
+        renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
+        renderer.setSize(width, height);
+        renderer.setPixelRatio(window.devicePixelRatio);
+        renderer.setClearColor(0x2C2926, 1);
+        container.appendChild(renderer.domElement);
+        
+        // Lights - brighter
+        const ambientLight = new THREE.AmbientLight(0xffffff, 1.2);
+        scene.add(ambientLight);
+        
+        const directionalLight1 = new THREE.DirectionalLight(0xffffff, 1.5);
+        directionalLight1.position.set(5, 10, 7);
+        scene.add(directionalLight1);
+        
+        const directionalLight2 = new THREE.DirectionalLight(0xffffff, 0.8);
+        directionalLight2.position.set(-5, 5, -5);
+        scene.add(directionalLight2);
+        
+        const directionalLight3 = new THREE.DirectionalLight(0xffffff, 0.5);
+        directionalLight3.position.set(0, -5, 0);
+        scene.add(directionalLight3);
+        
+        // Add grid helper for reference
+        const gridHelper = new THREE.GridHelper(10, 10, 0x888888, 0x444444);
+        scene.add(gridHelper);
+        console.log('Grid helper added');
+        
+        // Controls
+        controls = new THREE.OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.05;
+        controls.autoRotate = true;
+        controls.autoRotateSpeed = 2.0;
+        
+        // Load model
+        loadModel('{{ project.model_3d_file.url }}');
+        
+        // Animation loop
+        animate();
+        
+        isInitialized = true;
+        
+        console.log('3D viewer initialized!');
+    }
+
+    function loadModel(url) {
+        const loading = document.getElementById('3d-loading');
+        const progress = document.getElementById('loading-progress');
+        
+        console.log('Loading model from:', url);
+        
+        const loader = new THREE.OBJLoader();
+        
+        loader.load(
+            url,
+            function (obj) {
+                console.log('Model loaded successfully!', obj);
+                
+                // Hide loading
+                if (loading) loading.style.display = 'none';
+                
+                // Calculate bounding box
+                const box = new THREE.Box3().setFromObject(obj);
+                const center = box.getCenter(new THREE.Vector3());
+                const size = box.getSize(new THREE.Vector3());
+                const maxDim = Math.max(size.x, size.y, size.z);
+                
+                console.log('Original model size:', size);
+                console.log('Original model center:', center);
+                console.log('Max dimension:', maxDim);
+                
+                // Apply or enhance materials
+                let materialCount = 0;
+                obj.traverse(function(child) {
+                    if (child instanceof THREE.Mesh) {
+                        if (!child.material || child.material.type === 'MeshBasicMaterial') {
+                            // Only replace if no material or basic material
+                            child.material = new THREE.MeshPhongMaterial({
+                                color: 0xaaaaaa,
+                                shininess: 80,
+                                specular: 0x333333,
+                                flatShading: false,
+                                side: THREE.DoubleSide
+                            });
+                            materialCount++;
+                        } else {
+                            // Enhance existing material with better lighting
+                            if (child.material.type !== 'MeshPhongMaterial') {
+                                const oldColor = child.material.color || new THREE.Color(0xaaaaaa);
+                                child.material = new THREE.MeshPhongMaterial({
+                                    color: oldColor,
+                                    shininess: 80,
+                                    specular: 0x222222,
+                                    flatShading: false,
+                                    side: THREE.DoubleSide
+                                });
+                            }
+                            materialCount++;
+                        }
+                    }
+                });
+                console.log('Materials processed:', materialCount, 'meshes');
+                
+                // Scale FIRST to normalize size
+                if (maxDim > 0) {
+                    const scale = 4 / maxDim;  // Bigger scale
+                    obj.scale.set(scale, scale, scale);
+                    console.log('Applied scale:', scale);
+                    
+                    // Recalculate box after scaling
+                    box.setFromObject(obj);
+                    const newCenter = box.getCenter(new THREE.Vector3());
+                    console.log('New center after scale:', newCenter);
+                    
+                    // Center the model at origin
+                    obj.position.set(-newCenter.x, -newCenter.y, -newCenter.z);
+                    console.log('Model centered at:', obj.position);
+                }
+                
+                model = obj;
+                scene.add(model);
+                
+                // Position camera to see the model clearly
+                camera.position.set(4, 3, 6);
+                camera.lookAt(0, 0, 0);
+                controls.target.set(0, 0, 0);
+                controls.update();
+                
+                console.log('✅ Model successfully added to scene!');
+                console.log('📍 Model position:', model.position);
+                console.log('📏 Model scale:', model.scale);
+                console.log('📷 Camera position:', camera.position);
+            },
+            function (xhr) {
+                if (xhr.lengthComputable && progress) {
+                    const percent = Math.round((xhr.loaded / xhr.total) * 100);
+                    progress.textContent = percent + '%';
+                    console.log('Loading progress:', percent + '%');
+                }
+            },
+            function (error) {
+                console.error('Error loading model:', error);
+                if (loading) {
+                    loading.innerHTML = '<div class="text-white text-center"><p class="text-lg font-medium text-red-400">Ошибка загрузки модели</p><p class="text-sm mt-2">' + error.message + '</p></div>';
+                }
+            }
+        );
+    }
+
+    function animate() {
+        requestAnimationFrame(animate);
+        if (controls) controls.update();
+        if (renderer && scene && camera) {
+            renderer.render(scene, camera);
+        }
+    }
+
+    function onWindowResize() {
+        if (!renderer || !camera) return;
+        
+        const modal = document.getElementById('3d-viewer-modal');
+        if (modal && !modal.classList.contains('hidden')) {
+            const container = document.getElementById('3d-viewer-container');
+            if (container) {
+                const width = container.clientWidth;
+                const height = container.clientHeight;
+                
+                camera.aspect = width / height;
+                camera.updateProjectionMatrix();
+                renderer.setSize(width, height);
+            }
+        }
+    }
+
+    // Global functions
+    window.open3DViewer = function() {
+        console.log('Opening 3D viewer...');
+        const modal = document.getElementById('3d-viewer-modal');
+        if (modal) {
+            modal.classList.remove('hidden');
+            
+            if (!isInitialized) {
+                setTimeout(function() {
+                    init3DViewer();
+                }, 100);
+            }
+        }
+    };
+
+    window.close3DViewer = function() {
+        console.log('Closing 3D viewer...');
+        const modal = document.getElementById('3d-viewer-modal');
+        if (modal) {
+            modal.classList.add('hidden');
+        }
+    };
+
+    window.resetCamera = function() {
+        if (camera && controls) {
+            camera.position.set(0, 1.5, 4);
+            camera.lookAt(0, 0, 0);
+            controls.target.set(0, 0, 0);
+            controls.update();
+        }
+    };
+
+    window.toggleAutoRotate = function() {
+        if (controls) {
+            controls.autoRotate = !controls.autoRotate;
+        }
+    };
+
+    // Event listeners
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            window.close3DViewer();
+        }
+    });
+
+    const modal3D = document.getElementById('3d-viewer-modal');
+    if (modal3D) {
+        modal3D.addEventListener('click', function(e) {
+            if (e.target.id === '3d-viewer-modal') {
+                window.close3DViewer();
+            }
+        });
+    }
+    
+    window.addEventListener('resize', onWindowResize);
+})();
+</script>
+{% endif %}
+{% endblock %}

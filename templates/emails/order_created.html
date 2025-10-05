@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Новый заказ создан - ENGLER House</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .header {
+            background-color: #2C2926;
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+        .content {
+            margin-bottom: 30px;
+        }
+        .order-info {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .order-info h3 {
+            color: #2C2926;
+            margin-top: 0;
+        }
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .info-row:last-child {
+            border-bottom: none;
+        }
+        .label {
+            font-weight: bold;
+            color: #666;
+        }
+        .value {
+            color: #333;
+        }
+        .footer {
+            text-align: center;
+            color: #666;
+            font-size: 14px;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+        .button {
+            display: inline-block;
+            background: linear-gradient(135deg, #2C2926 0%, #564F40 100%);
+            color: white;
+            padding: 14px 28px;
+            text-decoration: none;
+            border-radius: 8px;
+            margin: 20px 0;
+            font-weight: 600;
+            font-size: 16px;
+            box-shadow: 0 4px 12px rgba(44, 41, 38, 0.3);
+            transition: all 0.3s ease;
+        }
+        .button:hover {
+            background: linear-gradient(135deg, #564F40 0%, #2C2926 100%);
+            box-shadow: 0 6px 16px rgba(44, 41, 38, 0.4);
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>ENGLER House</h1>
+            <p>Ваш новый заказ успешно создан!</p>
+        </div>
+        
+        <div class="content">
+            <p>Здравствуйте, {{ order.user.full_name }}!</p>
+            <p>Мы рады сообщить, что ваш новый заказ был успешно создан и принят в работу.</p>
+            
+            <div class="order-info">
+                <h3>Информация о заказе</h3>
+                <div class="info-row">
+                    <span class="label">Номер заказа:</span>
+                    <span class="value">#{{ order.order_number }}</span>
+                </div>
+                <div class="info-row">
+                    <span class="label">Дата создания:</span>
+                    <span class="value">{{ order.created_at|date:"d.m.Y H:i" }}</span>
+                </div>
+                <div class="info-row">
+                    <span class="label">Дата начала проекта:</span>
+                    <span class="value">{{ order.start_date|date:"d.m.Y" }}</span>
+                </div>
+                <div class="info-row">
+                    <span class="label">Дата сдачи проекта:</span>
+                    <span class="value">{{ order.end_date|date:"d.m.Y" }}</span>
+                </div>
+                <div class="info-row">
+                    <span class="label">Статус:</span>
+                    <span class="value">
+                        {% if order.status == 'completed' %}✓ Завершен
+                        {% elif order.status == 'in_progress' %}⏱ В работе
+                        {% elif order.status == 'pending' %}⏳ Ожидание
+                        {% else %}✗ Отменен{% endif %}
+                    </span>
+                </div>
+            </div>
+            
+            <p>Вы можете отслеживать прогресс выполнения вашего проекта в личном кабинете.</p>
+            
+            <div style="text-align: center;">
+                <a href="{{ site_url }}/my-projects/" class="button">Перейти к моим проектам</a>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>С уважением, команда ENGLER House</p>
+            <p>Если у вас есть вопросы, свяжитесь с нами по телефону или email</p>
+        </div>
+    </div>
+</body>
+</html>

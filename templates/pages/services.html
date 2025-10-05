@@ -1,0 +1,158 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Услуги - ENGLER House{% endblock %}
+
+{% block header_class %}bg-[#2C2926]{% endblock %}
+{% block header_style %}{% endblock %}
+
+{% block hero_content %}
+        <section class="bg-[#2C2926] pt-60 max-md:pt-30 ">
+            <div class="max-w-[1300px] mx-auto w-full grid grid-cols-1 md:grid-cols-2 px-6 md:px-0">
+                <h1 data-aos="fade-up" class="font-bold text-4xl md:text-[64px] text-white leading-[113%] mb-6 md:mb-0">
+                    Наши услуги по дизайну интерьера
+                </h1>
+                <div data-aos="fade-up" data-aos-delay="100" class="flex flex-col md:pl-32">
+                    <p class="text-base md:text-lg font-medium text-white leading-[134%] mb-8">
+                        Дизайн интерьера - это искусство и наука об улучшении внутреннего пространства зданий для достижения большей функциональности.
+                    </p>
+                    <button onclick="openFeedbackModal()"
+                        class="py-4 px-8 md:px-11 rounded-[8px] bg-[#FFFFFF] text-[#1E1E1E] w-full md:w-max font-bold text-sm flex gap-5 justify-center items-center hover:bg-gray-100 transition-colors">
+                        Обратная связь
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor" class="size-5">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="m4.5 19.5 15-15m0 0H8.25m11.25 0v11.25" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <div class="max-w-[1300px] mx-auto pt-16">
+        <img data-aos="fade-up" src="{% static 'imgs/pages/abouthero.png' %}" alt="Услуги дизайна интерьера" class="w-full">
+            </div>
+        </section>
+{% endblock %}
+
+{% block page_content %}
+        <section class="bg-[#2C2926] py-16 md:py-30">
+            <div id="services-container"
+                class="max-w-[1300px] mx-auto grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 px-6 md:px-0">
+                {% for service in services %}
+                <div data-aos="fade-up" {% if forloop.counter > 1 %}data-aos-delay="{{ forloop.counter }}00"{% endif %}
+                    class="service-card group relative flex-shrink-0 flex flex-col w-full">
+
+                    <div class="relative flex flex-col transition-all duration-300 ease-in-out hover:-translate-y-2 md:hover:-translate-y-4"
+                        style="margin-bottom: 24px;">
+
+                        <img src="{{ service.image.url }}" alt="{{ service.title }}" 
+                            class="object-cover w-full h-[350px] md:h-[450px] rounded-[8px]" />
+
+                        <div
+                            class="absolute px-4 md:px-6 py-4 md:py-6 transition-colors duration-300 ease-in-out bg-white bottom-4 md:bottom-6 left-4 md:left-6 right-4 md:right-6 group-hover:bg-[#564F40] rounded-[8px]">
+                            <h2
+                                class="text-[#291F1E] mb-3 md:mb-4 text-xl md:text-2xl font-bold transition-colors duration-300 ease-in-out group-hover:text-white">
+                                {{ service.title }}
+                            </h2>
+                            <p
+                                class="leading-[140%] text-sm md:text-base text-[#291f1eac] transition-colors duration-300 ease-in-out group-hover:text-white/70 line-clamp-3">
+                                {{ service.description }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="col-span-1 md:col-span-2 text-center py-12">
+                    <p class="text-white text-xl">Услуги скоро появятся</p>
+                </div>
+                {% endfor %}
+            </div>
+            
+            <!-- Load More Button -->
+            {% if services.count > 4 %}
+            <div class="flex justify-center mt-12">
+                <button id="load-more-services-btn" onclick="loadMoreServices()"
+                    class="py-4 px-8 md:px-11 rounded-[8px] bg-[#FFFFFF] text-[#1E1E1E] font-bold text-sm md:text-base flex gap-3 items-center hover:bg-gray-100 transition-colors">
+                    Показать еще
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 13.5 12 21m0 0-7.5-7.5M12 21V3" />
+                    </svg>
+                </button>
+            </div>
+            {% endif %}
+        </section>
+        
+        <script>
+        try {
+            // Initially hide services after 4th
+            const serviceCards = document.querySelectorAll('.service-card');
+            const loadMoreBtn = document.getElementById('load-more-services-btn');
+            let visibleCount = 4;
+            
+            // Hide services beyond initial count
+            serviceCards.forEach((card, index) => {
+                if (index >= visibleCount) {
+                    card.style.display = 'none';
+                }
+            });
+            
+            window.loadMoreServices = function() {
+                try {
+                    const hiddenServices = Array.from(serviceCards).filter(card => card.style.display === 'none');
+                    
+                    // Show next 4 services
+                    hiddenServices.slice(0, 4).forEach(card => {
+                        card.style.display = 'flex';
+                        card.setAttribute('data-aos', 'fade-up');
+                        // Trigger AOS animation if available
+                        if (typeof AOS !== 'undefined') {
+                            AOS.refresh();
+                        }
+                    });
+                    
+                    visibleCount += 4;
+                    
+                    // Hide button if all services are visible
+                    if (visibleCount >= serviceCards.length) {
+                        if (loadMoreBtn) {
+                            loadMoreBtn.style.display = 'none';
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error loading more services:', error);
+                }
+            };
+        } catch (error) {
+            console.error('Error initializing services pagination:', error);
+        }
+        </script>
+        
+        <section class="bg-[#564F40] py-12 md:py-0 md:h-[284px]">
+            <div class="max-w-[1300px] mx-auto grid grid-cols-1 md:grid-cols-4 gap-8 md:gap-20 px-6 md:px-0 md:pt-12">
+                <div data-aos="fade-up" class="flex flex-col items-center justify-center">
+            <img src="{% static 'imgs/icons/icon1.svg' %}" alt="" class="w-12 h-12 md:w-auto md:h-auto">
+                    <h3 class="mt-4 mb-3 text-lg font-bold text-center text-white md:text-xl">Полный цикл работ</h3>
+                    <p class="text-white/70 leading-[140%] text-center text-sm md:text-base">От эскиза до готового
+                        интерьера — под ключ</p>
+                </div>
+                <div data-aos="fade-up" data-aos-delay="100" class="flex flex-col items-center justify-center">
+            <img src="{% static 'imgs/icons/icon2.svg' %}" alt="" class="w-12 h-12 md:w-auto md:h-auto">
+                    <h3 class="mt-4 mb-3 text-lg font-bold text-center text-white md:text-xl">3D-визуализация</h3>
+                    <p class="text-white/70 leading-[140%] text-center text-sm md:text-base">Увидите свой будущий
+                        интерьер еще до начала ремонта</p>
+                </div>
+                <div data-aos="fade-up" data-aos-delay="200" class="flex flex-col items-center justify-center">
+            <img src="{% static 'imgs/icons/icon3.svg' %}" alt="" class="w-12 h-12 md:w-auto md:h-auto">
+                    <h3 class="mt-4 mb-3 text-lg font-bold text-center text-white md:text-xl">Индивидуальный подход</h3>
+                    <p class="text-white/70 leading-[140%] text-center text-sm md:text-base">Интерьер, который отражает
+                        именно ваш характер</p>
+                </div>
+                <div data-aos="fade-up" data-aos-delay="300" class="flex flex-col items-center justify-center">
+            <img src="{% static 'imgs/icons/icon4.svg' %}" alt="" class="w-12 h-12 md:w-auto md:h-auto">
+                    <h3 class="mt-4 mb-3 text-lg font-bold text-center text-white md:text-xl">Контроль качества</h3>
+                    <p class="text-white/70 leading-[140%] text-center text-sm md:text-base">Гарантия, что проект будет
+                        реализован точно по плану</p>
+                </div>
+            </div>
+        </section>
+{% endblock %}
+

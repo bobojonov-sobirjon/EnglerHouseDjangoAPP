@@ -1,0 +1,140 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Личный кабинет - ENGLER House</title>
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body class="bg-[#2C2926] min-h-screen p-4 md:p-8">
+    
+    <div class="max-w-4xl mx-auto" data-aos="fade-up">
+        
+        <!-- Header -->
+        <div class="flex items-center justify-between mb-8">
+            <div>
+                <h1 class="text-white text-3xl md:text-4xl font-bold mb-2">Личный кабинет</h1>
+                <a href="/" class="text-[#564F40] hover:text-[#6d6250] text-sm font-medium transition-colors duration-300">
+                    ← Вернуться на главную
+                </a>
+            </div>
+            <a href="/">
+                <img src="{% static 'imgs/logo.svg' %}" alt="ENGLER House" class="h-10 md:h-12">
+            </a>
+        </div>
+
+        <!-- Profile Card -->
+        <div class="bg-white rounded-2xl p-6 md:p-10 shadow-2xl">
+            
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="mb-6 p-4 rounded-lg {% if message.tags == 'error' %}bg-red-50 text-red-600{% elif message.tags == 'success' %}bg-green-50 text-green-600{% else %}bg-blue-50 text-blue-600{% endif %}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            <form method="POST" action="{% url 'profile' %}" class="space-y-6">
+                {% csrf_token %}
+                
+                <!-- Email Field (Read-only) -->
+                <div>
+                    <label for="email" class="block text-base md:text-lg font-bold text-[#291F1E] mb-3">
+                        Email
+                    </label>
+                    <input 
+                        type="email" 
+                        id="email" 
+                        name="email" 
+                        readonly
+                        class="w-full px-4 py-3 md:py-4 border border-gray-200 rounded-xl bg-gray-50 text-[#291F1E] cursor-not-allowed"
+                        value="{{ user.email }}"
+                    >
+                    <p class="text-xs md:text-sm text-gray-500 mt-2">Email адрес нельзя изменить</p>
+                </div>
+
+                <!-- Name Fields Row -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
+                    
+                    <!-- Last Name -->
+                    <div>
+                        <label for="last_name" class="block text-base md:text-lg font-bold text-[#291F1E] mb-3">
+                            Фамилия
+                        </label>
+                        <input 
+                            type="text" 
+                            id="last_name" 
+                            name="last_name" 
+                            class="w-full px-4 py-3 md:py-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#564F40] focus:border-transparent outline-none transition-all text-[#291F1E]"
+                            value="{{ user.last_name|default:'' }}"
+                        >
+                    </div>
+
+                    <!-- First Name -->
+                    <div>
+                        <label for="first_name" class="block text-base md:text-lg font-bold text-[#291F1E] mb-3">
+                            Имя
+                        </label>
+                        <input 
+                            type="text" 
+                            id="first_name" 
+                            name="first_name" 
+                            class="w-full px-4 py-3 md:py-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#564F40] focus:border-transparent outline-none transition-all text-[#291F1E]"
+                            value="{{ user.first_name|default:'' }}"
+                        >
+                    </div>
+
+                    <!-- Middle Name (Patronymic) -->
+                    <div>
+                        <label for="patronymic" class="block text-base md:text-lg font-bold text-[#291F1E] mb-3">
+                            Отчество
+                        </label>
+                        <input 
+                            type="text" 
+                            id="patronymic" 
+                            name="patronymic" 
+                            class="w-full px-4 py-3 md:py-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#564F40] focus:border-transparent outline-none transition-all text-[#291F1E]"
+                            placeholder="Отчество"
+                            value="{{ user.patronymic|default:'' }}"
+                        >
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex flex-col md:flex-row gap-4 pt-6">
+                    <button 
+                        type="submit"
+                        class="flex-1 bg-[#564F40] hover:bg-[#6d6250] text-white py-4 rounded-xl font-bold text-base transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98]"
+                    >
+                        Сохранить изменения
+                    </button>
+                    
+                    <a 
+                        href="{% url 'logout' %}"
+                        class="flex-1 border-2 border-red-500 hover:bg-red-500 text-red-500 hover:text-white py-4 rounded-xl font-bold text-base text-center transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98]"
+                    >
+                        Выйти из системы
+                    </a>
+                </div>
+            </form>
+        </div>
+
+        <!-- Footer Text -->
+        <p class="text-center text-white/50 text-xs md:text-sm mt-8">
+            © 2025 ENGLER House. Все права защищены.
+        </p>
+    </div>
+
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init({
+            duration: 800,
+            once: true
+        });
+    </script>
+</body>
+</html>
+

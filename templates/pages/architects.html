@@ -1,0 +1,239 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Архитекторы - ENGLER House{% endblock %}
+
+{% block header_class %}bg-[#2C2926]{% endblock %}
+{% block header_style %}{% endblock %}
+
+{% block hero_content %}
+        <section class="bg-[#2C2926] pt-60 max-md:pt-30 ">
+            <div class="max-w-[1300px] mx-auto w-full grid grid-cols-1 md:grid-cols-2 px-6 md:px-0">
+                <h1 data-aos="fade-up" class="font-bold text-4xl md:text-[64px] text-white leading-[113%] mb-6 md:mb-0">
+                    Создание гармонии
+                    с помощью дизайна
+                </h1>
+                <div data-aos="fade-up" data-aos-delay="100" class="flex flex-col md:pl-32">
+                    <p class="text-base md:text-lg font-medium text-white leading-[134%] mb-8">Дизайн интерьера - это
+                        искусство и
+                        наука
+                        об улучшении внутреннего пространства зданий для достижения большей функциональности.</p>
+                    <button onclick="openFeedbackModal()"
+                        class="py-4 px-8 md:px-11 rounded-[8px] bg-[#FFFFFF] text-[#1E1E1E] w-full md:w-max font-bold text-sm flex gap-5 justify-center items-center">
+                        Обратная связь
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor" class="size-5">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="m4.5 19.5 15-15m0 0H8.25m11.25 0v11.25" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <div class="max-w-[1300px] mx-auto pt-16">
+        <img data-aos="fade-up" src="{% static 'imgs/pages/archhero.png' %}" alt="" class="w-full">
+            </div>
+        </section>
+{% endblock %}
+
+{% block page_content %}
+        <section class="bg-[#2C2926] py-12 md:py-16">
+            <div class="grid grid-cols-1 md:grid-cols-2 max-w-[1300px] mx-auto px-6 md:px-0">
+                <h2 data-aos="fade-up" class="text-white text-3xl md:text-[50px] font-bold mb-6 md:mb-0">Наши
+                    архитекторы</h2>
+                {% comment %} <div data-aos="fade-up" data-aos-delay="100"
+                    class="flex items-center justify-start gap-6 cursor-pointer md:justify-end md:gap-10 group">
+                    <p
+                        class="text-lg md:text-xl font-medium text-white group-hover:text-[#564F40] md:pl-[115px] transition-all duration-300 ease-in-out">
+                        Проектирование интерьеров, которые <br class="hidden md:block">
+                        оставляют неизгладимое впечатление
+                    </p>
+                    <div
+                        class="border border-white group-hover:border-[#564F40] transition-all duration-300 ease-in-out rounded-[8px] p-2 flex items-center justify-center flex-shrink-0">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor"
+                            class="size-6 md:size-8 text-white group-hover:text-[#564F40] font-bold transition-all duration-300 ease-in-out">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="m4.5 19.5 15-15m0 0H8.25m11.25 0v11.25" />
+                        </svg>
+                    </div>
+                </div> {% endcomment %}
+            </div>
+
+    <div id="architects-container" class="grid grid-cols-1 md:grid-cols-4 gap-4 max-w-[1300px] mx-auto pt-8 pb-4 px-6 md:px-0 md:gap-8 md:pt-11">
+        {% for architect in architects %}
+        <div data-aos="fade-up" class="architect-card group relative flex-shrink-0 flex flex-col w-full">
+                    <div
+                        class="flex flex-col bg-white rounded-[8px] transition-all duration-300 ease-in-out hover:-translate-y-2 md:hover:-translate-y-6 mb-6">
+
+                <img src="{{ architect.photo.url }}" alt="{{ architect.name }}"
+                            class="w-full h-[320px] md:h-[380px] rounded-t-[8px] transition-all duration-300 ease-in-out group-hover:rounded-none object-cover" />
+
+                        <div
+                            class="px-4 md:px-5 py-4 md:py-6 transition-colors duration-300 ease-in-out group-hover:bg-[#564F40] rounded-b-[8px]">
+                            <h2
+                                class="text-[#291F1E] mb-2 text-lg md:text-xl font-bold transition-colors duration-300 ease-in-out group-hover:text-white">
+                        {{ architect.name }}
+                            </h2>
+                            {% if architect.position %}
+                            <p class="text-sm md:text-base text-[#564F40] mb-2 md:mb-3 font-semibold transition-colors duration-300 ease-in-out group-hover:text-white/90">
+                                {{ architect.position }}
+                            </p>
+                            {% endif %}
+                            <p
+                                class="leading-[140%] text-sm md:text-base text-[#291f1eac] transition-colors duration-300 ease-in-out group-hover:text-white/70 line-clamp-3">
+                                {{ architect.description }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+        {% empty %}
+        <div class="col-span-1 md:col-span-4 text-center py-12">
+            <p class="text-white text-xl">Архитекторы скоро появятся</p>
+        </div>
+        {% endfor %}
+            </div>
+            
+            <!-- Load More Button -->
+            {% if architects.count > 8 %}
+            <div class="flex justify-center mt-8 pb-12">
+                <button id="load-more-architects-btn" onclick="loadMoreArchitects()"
+                    class="py-4 px-8 md:px-11 rounded-[8px] bg-[#FFFFFF] text-[#1E1E1E] font-bold text-sm md:text-base flex gap-3 items-center hover:bg-gray-100 transition-colors">
+                    Показать еще
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 13.5 12 21m0 0-7.5-7.5M12 21V3" />
+                    </svg>
+                </button>
+            </div>
+            {% endif %}
+        </section>
+        
+        <script>
+        try {
+            // Initially hide architects after 8th
+            const architectCards = document.querySelectorAll('.architect-card');
+            const loadMoreBtn = document.getElementById('load-more-architects-btn');
+            let visibleCount = 8;
+            
+            // Hide architects beyond initial count
+            architectCards.forEach((card, index) => {
+                if (index >= visibleCount) {
+                    card.style.display = 'none';
+                }
+            });
+            
+            window.loadMoreArchitects = function() {
+                try {
+                    const hiddenArchitects = Array.from(architectCards).filter(card => card.style.display === 'none');
+                    
+                    // Show next 8 architects
+                    hiddenArchitects.slice(0, 8).forEach(card => {
+                        card.style.display = 'flex';
+                        card.setAttribute('data-aos', 'fade-up');
+                        // Trigger AOS animation if available
+                        if (typeof AOS !== 'undefined') {
+                            AOS.refresh();
+                        }
+                    });
+                    
+                    visibleCount += 8;
+                    
+                    // Hide button if all architects are visible
+                    if (visibleCount >= architectCards.length) {
+                        if (loadMoreBtn) {
+                            loadMoreBtn.style.display = 'none';
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error loading more architects:', error);
+                }
+            };
+        } catch (error) {
+            console.error('Error initializing architects pagination:', error);
+        }
+        </script>
+{% if show_gallery %}
+        <section class="bg-[#2C2926] pt-24 pb-12 md:pt-40 md:pb-16">
+            <div class="px-6 md:px-0 max-w-[1300px] mx-auto">
+                <h2 data-aos="fade-up" class="text-white text-3xl md:text-[50px] font-bold text-center leading-[110%]">
+                    Галерея роскошного <br class="hidden md:block"> интерьера
+                </h2>
+                <p data-aos="fade-up" data-aos-delay="100"
+                    class="mt-4 md:mt-6 text-base md:text-xl font-medium text-center text-white max-w-[680px] mx-auto leading-[134%]">
+                    Дизайн интерьера - это искусство и наука об улучшении внутреннего пространства зданий для достижения
+                    большей функциональности
+                </p>
+            </div>
+            <div
+                class="flex flex-col md:flex-wrap md:flex-row gap-4 md:gap-4 mt-8 md:mt-11 max-w-[1440px] mx-auto px-6 md:px-0">
+        {% if gallery_1 %}
+        <img data-aos="fade-up" src="{{ gallery_1.image.url }}" alt="{{ gallery_1.title }}"
+            class="w-full max-md:h-64 max-md:object-cover max-md:rounded-lg md:mt-[-70px] md:w-auto">
+        {% endif %}
+        {% if gallery_2 %}
+        <img data-aos="fade-up" data-aos-delay="100" src="{{ gallery_2.image.url }}" alt="{{ gallery_2.title }}"
+                    class="w-full max-md:h-64 max-md:object-cover max-md:rounded-lg md:w-auto">
+        {% endif %}
+        {% if gallery_3 %}
+        <img data-aos="fade-up" data-aos-delay="200" src="{{ gallery_3.image.url }}" alt="{{ gallery_3.title }}"
+            class="w-full max-md:h-64 max-md:object-cover max-md:rounded-lg md:mb-[70px] md:w-auto">
+        {% endif %}
+        {% if gallery_4 %}
+        <img data-aos="fade-up" data-aos-delay="300" src="{{ gallery_4.image.url }}" alt="{{ gallery_4.title }}"
+            class="w-full max-md:h-64 max-md:object-cover max-md:rounded-lg md:mb-[-65px] md:mt-[30px] md:w-auto">
+        {% endif %}
+        {% if gallery_5 %}
+        <img data-aos="fade-up" data-aos-delay="400" src="{{ gallery_5.image.url }}" alt="{{ gallery_5.title }}"
+            class="w-full max-md:h-64 max-md:object-cover max-md:rounded-lg md:mb-[-55px] md:mt-[-70px] md:w-auto">
+        {% endif %}
+        {% if gallery_6 %}
+        <img data-aos="fade-up" data-aos-delay="500" src="{{ gallery_6.image.url }}" alt="{{ gallery_6.title }}"
+                    class="w-full max-md:h-64 max-md:object-cover max-md:rounded-lg md:w-auto">
+        {% endif %}
+        {% if gallery_7 %}
+        <img data-aos="fade-up" data-aos-delay="600" src="{{ gallery_7.image.url }}" alt="{{ gallery_7.title }}"
+            class="w-full max-md:h-64 max-md:object-cover max-md:rounded-lg md:mb-[80px] md:w-auto">
+        {% endif %}
+        {% if gallery_8 %}
+        <img data-aos="fade-up" data-aos-delay="700" src="{{ gallery_8.image.url }}" alt="{{ gallery_8.title }}"
+            class="w-full max-md:h-64 max-md:object-cover max-md:rounded-lg md:mt-[-70px] md:w-auto">
+        {% endif %}
+        {% if gallery_9 %}
+        <img data-aos="fade-up" data-aos-delay="800" src="{{ gallery_9.image.url }}" alt="{{ gallery_9.title }}"
+            class="w-full max-md:h-64 max-md:object-cover max-md:rounded-lg md:mt-[65px] md:mb-[16px] md:w-auto">
+        {% endif %}
+        {% if gallery_10 %}
+        <img data-aos="fade-up" data-aos-delay="900" src="{{ gallery_10.image.url }}" alt="{{ gallery_10.title }}"
+            class="w-full max-md:h-64 max-md:object-cover max-md:rounded-lg md:mt-[65px] md:mb-[16px] md:w-auto">
+        {% endif %}
+            </div>
+        </section>
+{% endif %}
+        <section class="bg-[#564F40] py-12 md:py-0 md:h-[284px]">
+            <div class="max-w-[1300px] mx-auto grid grid-cols-1 md:grid-cols-4 gap-8 md:gap-20 px-6 md:px-0 md:pt-12">
+                <div data-aos="fade-up" class="flex flex-col items-center justify-center">
+            <img src="{% static 'imgs/icons/icon1.svg' %}" alt="" class="w-12 h-12 md:w-auto md:h-auto">
+                    <h3 class="mt-4 mb-3 text-lg font-bold text-center text-white md:text-xl">Полный цикл работ</h3>
+                    <p class="text-white/70 leading-[140%] text-center text-sm md:text-base">От эскиза до готового
+                        интерьера — под ключ</p>
+                </div>
+                <div data-aos="fade-up" data-aos-delay="100" class="flex flex-col items-center justify-center">
+            <img src="{% static 'imgs/icons/icon2.svg' %}" alt="" class="w-12 h-12 md:w-auto md:h-auto">
+                    <h3 class="mt-4 mb-3 text-lg font-bold text-center text-white md:text-xl">3D-визуализация</h3>
+                    <p class="text-white/70 leading-[140%] text-center text-sm md:text-base">Увидите свой будущий
+                        интерьер еще до начала ремонта</p>
+                </div>
+                <div data-aos="fade-up" data-aos-delay="200" class="flex flex-col items-center justify-center">
+            <img src="{% static 'imgs/icons/icon3.svg' %}" alt="" class="w-12 h-12 md:w-auto md:h-auto">
+                    <h3 class="mt-4 mb-3 text-lg font-bold text-center text-white md:text-xl">Индивидуальный подход</h3>
+                    <p class="text-white/70 leading-[140%] text-center text-sm md:text-base">Интерьер, который отражает
+                        именно ваш характер</p>
+                </div>
+                <div data-aos="fade-up" data-aos-delay="300" class="flex flex-col items-center justify-center">
+            <img src="{% static 'imgs/icons/icon4.svg' %}" alt="" class="w-12 h-12 md:w-auto md:h-auto">
+                    <h3 class="mt-4 mb-3 text-lg font-bold text-center text-white md:text-xl">Контроль качества</h3>
+                    <p class="text-white/70 leading-[140%] text-center text-sm md:text-base">Гарантия, что проект будет
+                        реализован точно по плану</p>
+                </div>
+            </div>
+        </section>
+{% endblock %}

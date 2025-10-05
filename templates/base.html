@@ -1,0 +1,631 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}ENGLER House{% endblock %}</title>
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="icon" type="image/png" href="{% static 'imgs/favicon.png' %}">
+    {% block extra_css %}{% endblock %}
+</head>
+
+<body>
+    <header class="relative {% block header_class %}h-205 max-md:h-[700px]{% endblock %}"
+        {% block header_style %}style="background: url('{% static 'imgs/hero-bg.png' %}') center/cover no-repeat"{% endblock %}>
+        <div class="max-w-[1300px] mx-auto h-full">
+            <nav class="fixed top-6 
+           flex items-center justify-between h-[78px] 
+           border border-[#FFFFFFA3] 
+           bg-white/70 backdrop-blur-md 
+           px-6 rounded-xl w-[1300px] z-[99] hidden md:flex">
+
+                <a href="/" class="cursor-pointer">
+                    <img src="{% static 'imgs/logodark.svg' %}" alt="ENGLER HOUSE" class="h-10 transition-opacity duration-300 hover:opacity-70">
+                </a>
+
+                <ul class="flex items-center gap-8 text-[#291F1E]">
+                    <li class="{% if request.path == '/' %}font-bold{% endif %} cursor-pointer group"> 
+                        <a href="/" class="relative pb-1 transition-colors duration-300 hover:text-[#564F40]">
+                            Главная
+                            <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-[#564F40] transition-all duration-300 group-hover:w-full"></span>
+                        </a> 
+                    </li>
+                    <li class="cursor-pointer group"> 
+                        <a href="{% url 'services' %}" class="relative pb-1 transition-colors duration-300 hover:text-[#564F40]">
+                            Услуги
+                            <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-[#564F40] transition-all duration-300 group-hover:w-full"></span>
+                        </a> 
+                    </li>
+                    <li class="cursor-pointer group"> 
+                        <a href="{% url 'projects' %}" class="relative pb-1 transition-colors duration-300 hover:text-[#564F40]">
+                            Проекты
+                            <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-[#564F40] transition-all duration-300 group-hover:w-full"></span>
+                        </a> 
+                    </li>
+                    <li class="cursor-pointer group"> 
+                        <a href="{% url 'architects' %}" class="relative pb-1 transition-colors duration-300 hover:text-[#564F40]">
+                            Архитекторы
+                            <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-[#564F40] transition-all duration-300 group-hover:w-full"></span>
+                        </a> 
+                    </li>
+                    <li class="cursor-pointer group"> 
+                        <a href="{% url 'about' %}" class="relative pb-1 transition-colors duration-300 hover:text-[#564F40]">
+                            Пресса о нас
+                            <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-[#564F40] transition-all duration-300 group-hover:w-full"></span>
+                        </a> 
+                    </li>
+                    <li class="cursor-pointer group"> 
+                        <a href="{% url 'contact' %}" class="relative pb-1 transition-colors duration-300 hover:text-[#564F40]">
+                            Контакты
+                            <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-[#564F40] transition-all duration-300 group-hover:w-full"></span>
+                        </a> 
+                    </li>
+                    <li class="cursor-pointer group"> 
+                        <a href="{% url 'my_projects' %}" class="relative pb-1 transition-colors duration-300 hover:text-[#564F40]">
+                            Мои проекты
+                            <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-[#564F40] transition-all duration-300 group-hover:w-full"></span>
+                        </a> 
+                    </li>
+                </ul>
+
+                {% if user.is_authenticated %}
+                <a href="{% url 'profile' %}"
+                    class="border border-[#291F1E] py-2 px-4 rounded-[8px] text-sm font-bold cursor-pointer hover:bg-[#291F1E] hover:text-white transition-colors duration-300">
+                    Личный кабинет
+                </a>
+                {% else %}
+                <a href="{% url 'login' %}"
+                    class="border border-[#291F1E] py-2 px-4 rounded-[8px] text-sm font-bold cursor-pointer hover:bg-[#291F1E] hover:text-white transition-colors duration-300">
+                    Логин
+                </a>
+                {% endif %}
+            </nav>
+
+            <nav class="fixed top-6 
+           flex items-center justify-between h-[78px] 
+           border border-[#FFFFFFA3] 
+           bg-white/70 backdrop-blur-md 
+           px-6 rounded-xl w-[calc(100%-3rem)] z-[99] md:hidden left-1/2 transform -translate-x-1/2">
+
+                <a href="/" class="cursor-pointer">
+                    <img src="{% static 'imgs/logodark.svg' %}" alt="ENGLER HOUSE" class="h-10 transition-opacity duration-300 active:opacity-70">
+                </a>
+
+                <button class="p-2" onclick="toggleMobileMenu()">
+                    <svg id="hamburger-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                        stroke-width="1.5" stroke="currentColor" class="size-6">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                    </svg>
+                    <svg id="close-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                        stroke-width="1.5" stroke="currentColor" class="hidden size-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </nav>
+
+            <div id="mobile-menu"
+                class="fixed top-24 left-6 right-6 bg-white/90 backdrop-blur-md rounded-xl z-[98] p-6 hidden flex-col gap-4 md:hidden">
+                <ul class="flex flex-col gap-4 text-[#291F1E]">
+                    <li class="py-2 {% if request.path == '/' %}font-bold{% endif %} border-b border-gray-200 cursor-pointer">
+                        <a href="/" class="block transition-all duration-300 hover:text-[#564F40] hover:pl-2">Главная</a> 
+                    </li>
+                    <li class="py-2 border-b border-gray-200 cursor-pointer">
+                        <a href="{% url 'services' %}" class="block transition-all duration-300 hover:text-[#564F40] hover:pl-2">Услуги</a>
+                    </li>
+                    <li class="py-2 border-b border-gray-200 cursor-pointer">
+                        <a href="{% url 'projects' %}" class="block transition-all duration-300 hover:text-[#564F40] hover:pl-2">Проекты</a>
+                    </li>
+                    <li class="py-2 border-b border-gray-200 cursor-pointer">
+                        <a href="{% url 'architects' %}" class="block transition-all duration-300 hover:text-[#564F40] hover:pl-2">Архитекторы</a> 
+                    </li>
+                    <li class="py-2 border-b border-gray-200 cursor-pointer">
+                        <a href="{% url 'about' %}" class="block transition-all duration-300 hover:text-[#564F40] hover:pl-2">Пресса о нас</a> 
+                    </li>
+                    <li class="py-2 border-b border-gray-200 cursor-pointer">
+                        <a href="{% url 'contact' %}" class="block transition-all duration-300 hover:text-[#564F40] hover:pl-2">Контакты</a>
+                    </li>
+                    <li class="py-2 border-b border-gray-200 cursor-pointer">
+                        <a href="{% url 'my_projects' %}" class="block transition-all duration-300 hover:text-[#564F40] hover:pl-2">Мои проекты</a>
+                    </li>
+                </ul>
+
+                {% if user.is_authenticated %}
+                <a href="{% url 'profile' %}"
+                    class="border border-[#291F1E] py-3 px-4 rounded-[8px] text-sm font-bold cursor-pointer mt-4 block text-center hover:bg-[#291F1E] hover:text-white transition-colors duration-300">
+                    Личный кабинет
+                </a>
+                {% else %}
+                <a href="{% url 'login' %}"
+                    class="border border-[#291F1E] py-3 px-4 rounded-[8px] text-sm font-bold cursor-pointer mt-4 block text-center hover:bg-[#291F1E] hover:text-white transition-colors duration-300">
+                    Логин
+                </a>
+                {% endif %}
+            </div>
+        </div>
+
+        {% block hero_content %}
+        <div class="absolute bottom-0 flex w-full pb-16 -translate-x-1/2 left-1/2 h-[500px] max-md:h-[400px] items-end"
+            style="background: linear-gradient(180deg, rgba(30, 30, 30, 0) 0%, #1E1E1E 100%);">
+            <div class="max-w-[1300px] mx-auto w-full grid grid-cols-1 md:grid-cols-2 px-6 md:px-0">
+                <h1 data-aos="fade-up" class="font-bold text-4xl md:text-[64px] text-white leading-[113%] mb-6 md:mb-0">
+                    {% if hero %}
+                        {{ hero.title|linebreaksbr }}
+                    {% else %}
+                        Создание гармонии<br>с помощью дизайна
+                    {% endif %}
+                </h1>
+                <div data-aos="fade-up" class="flex flex-col md:pl-32">
+                    <p class="text-base md:text-lg font-medium text-white leading-[134%] mb-8">
+                        {% if hero %}
+                            {{ hero.description }}
+                        {% else %}
+                            Дизайн интерьера - это искусство и наука об улучшении внутреннего пространства зданий для достижения большей функциональности.
+                        {% endif %}
+                    </p>
+                    <button onclick="openFeedbackModal()"
+                        class="py-4 px-8 md:px-11 rounded-[8px] bg-[#FFFFFF] text-[#1E1E1E] w-full md:w-max font-bold text-sm flex gap-5 justify-center items-center">
+                        Обратная связь
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor" class="size-5">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="m4.5 19.5 15-15m0 0H8.25m11.25 0v11.25" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+        {% endblock %}
+
+        <div id="feedbackModal"
+            class="fixed inset-0 bg-black/50 backdrop-blur-sm z-[100] hidden items-center justify-center p-4">
+            <div
+                class="bg-[#fff] relative rounded-lg max-w-[1036px] w-full grid grid-cols-1 md:grid-cols-2 overflow-hidden max-h-[90vh] md:max-h-none overflow-y-auto">
+                <img src="{% static 'imgs/formmodal.png' %}" alt="" class="w-full h-[200px] md:h-[484px] object-cover">
+                <div class="flex flex-col p-6 md:p-14">
+                    <h2 class="text-[#291F1E] mb-3 font-bold text-2xl md:text-[44px]">Обратная связь</h2>
+                    <p class="text-sm text-[#291F1E] mb-6 md:mb-10 font-medium">Дизайн интерьера - это искусство и наука
+                        об улучшении внутреннего пространства зданий
+                        для достижения большей функциональности.</p>
+                    
+                    <!-- Success/Error message -->
+                    <div id="feedbackMessage" class="hidden mb-4 p-3 rounded-lg text-sm font-medium"></div>
+                    
+                    <form id="feedbackForm">
+                        <input type="text" id="feedbackName" name="name" placeholder="Имя" required
+                            class="w-full py-3 mb-4 text-sm text-[#1E1E1E]/70 bg-transparent border-b border-[#1E1E1E] outline-none placeholder:text-[#1E1E1E]/70 focus:border-[#291F1E]">
+                        <input type="email" id="feedbackEmail" name="email" placeholder="Почта" required
+                            class="w-full py-3 mb-4 text-sm text-[#1E1E1E]/70 bg-transparent border-b border-[#1E1E1E] outline-none placeholder:text-[#1E1E1E]/70 focus:border-[#291F1E]">
+                        <input type="tel" id="feedbackPhone" name="phone" placeholder="Телефон" required
+                            class="w-full py-3 mb-4 text-sm text-[#1E1E1E]/70 bg-transparent border-b border-[#1E1E1E] outline-none placeholder:text-[#1E1E1E]/70 focus:border-[#291F1E]">
+                        <button type="submit" id="feedbackSubmitBtn"
+                            class="py-4 px-8 mt-1 md:px-11 rounded-[8px] bg-[#291F1E] text-[#fff] w-full font-bold text-sm flex gap-5 justify-center items-center hover:bg-[#3d2e2c] transition-colors">
+                            <span id="feedbackBtnText">Отправить</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                stroke="currentColor" class="size-5">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="m4.5 19.5 15-15m0 0H8.25m11.25 0v11.25" />
+                            </svg>
+                        </button>
+                    </form>
+                </div>
+
+                <button onclick="closeFeedbackModal()"
+                    class="absolute transition-colors duration-300 top-4 right-4 text-black/70 hover:text-black">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="currentColor" class="size-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </header>
+    <main>
+        {% block page_content %}
+        {% if services %}
+        <section class="bg-[#2C2926] py-16 md:py-30">
+            <div class="grid grid-cols-1 md:grid-cols-2 max-w-[1300px] mx-auto px-6 md:px-0">
+                <h2 data-aos="fade-up" class="text-white text-3xl md:text-[50px] font-bold mb-6 md:mb-0">Украсьте свой
+                    интерьер</h2>
+                <a href="{% url 'services' %}" data-aos="fade-up" data-aos-delay="100"
+                    class="flex items-center justify-start gap-6 cursor-pointer md:justify-end md:gap-10 group">
+                    <p
+                        class="text-lg md:text-xl font-medium text-white group-hover:text-[#564F40] md:pl-[115px] transition-all duration-300 ease-in-out">
+                        Профессиональные решения для <br class="hidden md:block">
+                        вашего идеального пространства
+                    </p>
+                    <div
+                        class="border border-white group-hover:border-[#564F40] transition-all duration-300 ease-in-out rounded-[8px] p-2 flex items-center justify-center flex-shrink-0">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor"
+                            class="size-6 md:size-8 text-white group-hover:text-[#564F40] font-bold transition-all duration-300 ease-in-out">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="m4.5 19.5 15-15m0 0H8.25m11.25 0v11.25" />
+                        </svg>
+                    </div>
+                </a>
+            </div>
+
+            <div class="flex gap-4 md:gap-8 px-6 md:pl-[70px] overflow-x-auto scrollbar-hide pt-8 md:pt-11 pb-4">
+                {% for service in services %}
+                <div data-aos="fade-up" {% if not forloop.first %}data-aos-delay="{{ forloop.counter0|add:1|add:0|add:0 }}"{% endif %} 
+                    class="group relative flex-shrink-0 flex flex-col w-[280px] md:w-[324px]">
+                    <div class="flex flex-col bg-white rounded-[10px] transition-all duration-300 ease-in-out hover:-translate-y-2 md:hover:-translate-y-6"
+                        style="margin-bottom: 24px;">
+
+                        <img src="{{ service.image.url }}" alt="{{ service.title }}"
+                            class="w-full h-[320px] md:h-[380px] rounded-t-[8px] transition-all duration-300 ease-in-out group-hover:rounded-none object-cover" />
+
+                        <div
+                            class="px-4 md:px-5 py-4 md:py-6 transition-colors duration-300 ease-in-out group-hover:bg-[#564F40] rounded-b-[8px]">
+                            <h2
+                                class="text-[#291F1E] mb-3 md:mb-[14px] text-lg md:text-xl font-bold transition-colors duration-300 ease-in-out group-hover:text-white">
+                                {{ service.title }}
+                            </h2>
+                            <p
+                                class="leading-[140%] text-sm md:text-base text-[#291f1eac] transition-colors duration-300 ease-in-out group-hover:text-white/70">
+                                {{ service.description|truncatewords:20 }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+        {% endif %}
+        <section class="bg-[#564F40] py-12 md:py-0 md:h-[284px]">
+            <div class="max-w-[1300px] mx-auto grid grid-cols-1 md:grid-cols-4 gap-8 md:gap-20 px-6 md:px-0 md:pt-12">
+                <div data-aos="fade-up" class="flex flex-col items-center justify-center">
+                    <img src="{% static 'imgs/icons/icon1.svg' %}" alt="" class="w-12 h-12 md:w-auto md:h-auto">
+                    <h3 class="mt-4 mb-3 text-lg font-bold text-center text-white md:text-xl">Полный цикл работ</h3>
+                    <p class="text-white/70 leading-[140%] text-center text-sm md:text-base">От эскиза до готового
+                        интерьера — под ключ</p>
+                </div>
+                <div data-aos="fade-up" data-aos-delay="100" class="flex flex-col items-center justify-center">
+                    <img src="{% static 'imgs/icons/icon2.svg' %}" alt="" class="w-12 h-12 md:w-auto md:h-auto">
+                    <h3 class="mt-4 mb-3 text-lg font-bold text-center text-white md:text-xl">3D-визуализация</h3>
+                    <p class="text-white/70 leading-[140%] text-center text-sm md:text-base">Увидите свой будущий
+                        интерьер еще до начала ремонта</p>
+                </div>
+                <div data-aos="fade-up" data-aos-delay="200" class="flex flex-col items-center justify-center">
+                    <img src="{% static 'imgs/icons/icon3.svg' %}" alt="" class="w-12 h-12 md:w-auto md:h-auto">
+                    <h3 class="mt-4 mb-3 text-lg font-bold text-center text-white md:text-xl">Индивидуальный подход</h3>
+                    <p class="text-white/70 leading-[140%] text-center text-sm md:text-base">Интерьер, который отражает
+                        именно ваш характер</p>
+                </div>
+                <div data-aos="fade-up" data-aos-delay="300" class="flex flex-col items-center justify-center">
+                    <img src="{% static 'imgs/icons/icon4.svg' %}" alt="" class="w-12 h-12 md:w-auto md:h-auto">
+                    <h3 class="mt-4 mb-3 text-lg font-bold text-center text-white md:text-xl">Контроль качества</h3>
+                    <p class="text-white/70 leading-[140%] text-center text-sm md:text-base">Гарантия, что проект будет
+                        реализован точно по плану</p>
+                </div>
+            </div>
+        </section>
+        {% if projects %}
+        <section class="bg-[#2C2926] py-16 md:py-30">
+            <div class="grid grid-cols-1 md:grid-cols-2 max-w-[1300px] mx-auto px-6 md:px-0">
+                <h2 data-aos="fade-up" class="text-white text-3xl md:text-[50px] font-bold mb-6 md:mb-0">Наши проекты
+                </h2>
+                <a href="{% url 'projects' %}" data-aos="fade-up" data-aos-delay="100"
+                    class="flex items-center justify-start gap-6 cursor-pointer md:justify-end md:gap-10 group">
+                    <p
+                        class="text-lg md:text-xl font-medium text-white group-hover:text-[#564F40] md:pl-[115px] transition-all duration-300 ease-in-out">
+                        Воплощаем мечты в реальность <br class="hidden md:block">
+                        через уникальный дизайн
+                    </p>
+                    <div
+                        class="border border-white group-hover:border-[#564F40] transition-all duration-300 ease-in-out rounded-[8px] p-2 flex items-center justify-center flex-shrink-0">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor"
+                            class="size-6 md:size-8 text-white group-hover:text-[#564F40] font-bold transition-all duration-300 ease-in-out">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="m4.5 19.5 15-15m0 0H8.25m11.25 0v11.25" />
+                        </svg>
+                    </div>
+                </a>
+            </div>
+            <div
+                class="max-w-[1300px] mx-auto grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 pt-8 md:pt-11 px-6 md:px-0">
+                {% for project in projects %}
+                <a href="{% url 'works_progress' project.id %}" data-aos="fade-up" {% if not forloop.first %}data-aos-delay="{{ forloop.counter0|add:1|add:0|add:0 }}"{% endif %}
+                    class="group relative cursor-pointer flex-shrink-0 flex flex-col w-full h-[400px] md:h-[584px]">
+
+                    <div class="relative flex flex-col transition-all duration-300 ease-in-out hover:-translate-y-2 md:hover:-translate-y-6"
+                        style="margin-bottom: 24px;">
+
+                        <img src="{{ project.image.url }}" alt="{{ project.title }}" class="object-cover w-full h-full rounded-[8px]" />
+
+                        <div
+                            class="absolute px-4 md:px-5 py-4 md:py-6 transition-colors duration-300 ease-in-out bg-white w-[calc(100%-80px)] md:w-[calc(100%-108px)] bottom-4 md:bottom-6 left-4 md:left-6 group-hover:bg-[#564F40] rounded-[8px] rounded-br-none">
+                            <h2
+                                class="text-[#291F1E] mb-3 md:mb-[14px] text-lg md:text-xl font-bold transition-colors duration-300 ease-in-out group-hover:text-white">
+                                {{ project.title }}
+                            </h2>
+                            <p
+                                class="leading-[140%] text-sm md:text-base text-[#291f1eac] transition-colors duration-300 ease-in-out group-hover:text-white/70">
+                                {{ project.description|truncatewords:15 }}
+                            </p>
+                        </div>
+
+                        <div
+                            class="bg-[#564F40] transition-all duration-300 ease-in-out rounded-r-[8px] w-12 h-12 md:w-15 md:h-15 flex items-center justify-center absolute bottom-4 md:bottom-6 right-4 md:right-6">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                stroke="currentColor"
+                                class="size-6 md:size-8 text-[#291F1E] group-hover:text-white font-bold transition-all duration-300 ease-in-out">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="m4.5 19.5 15-15m0 0H8.25m11.25 0v11.25" />
+                            </svg>
+                        </div>
+                    </div>
+                </a>
+                {% endfor %}
+            </div>
+        </section>
+        {% endif %}
+        {% if show_gallery %}
+        <section class="bg-[#2C2926] pt-24 pb-12 md:pt-40 md:pb-16">
+            <div class="px-6 md:px-0 max-w-[1300px] mx-auto">
+                <h2 data-aos="fade-up" class="text-white text-3xl md:text-[50px] font-bold text-center leading-[110%]">
+                    Галерея роскошного <br class="hidden md:block"> интерьера
+                </h2>
+                <p data-aos="fade-up" data-aos-delay="100"
+                    class="mt-4 md:mt-6 text-base md:text-xl font-medium text-center text-white max-w-[680px] mx-auto leading-[134%]">
+                    Дизайн интерьера - это искусство и наука об улучшении внутреннего пространства зданий для достижения
+                    большей функциональности
+                </p>
+            </div>
+            <div
+                class="flex flex-col md:flex-wrap md:flex-row gap-4 md:gap-4 mt-8 md:mt-11 max-w-[1440px] mx-auto px-6 md:px-0">
+                {% if gallery_1 %}
+                <img data-aos="fade-up" src="{{ gallery_1.image.url }}" alt="{{ gallery_1.title }}"
+                    class="w-full max-md:h-64 max-md:object-cover max-md:rounded-lg md:mt-[-70px] md:w-auto">
+                {% endif %}
+                {% if gallery_2 %}
+                <img data-aos="fade-up" data-aos-delay="100" src="{{ gallery_2.image.url }}" alt="{{ gallery_2.title }}"
+                    class="w-full max-md:h-64 max-md:object-cover max-md:rounded-lg md:w-auto">
+                {% endif %}
+                {% if gallery_3 %}
+                <img data-aos="fade-up" data-aos-delay="200" src="{{ gallery_3.image.url }}" alt="{{ gallery_3.title }}"
+                    class="w-full max-md:h-64 max-md:object-cover max-md:rounded-lg md:mb-[70px] md:w-auto">
+                {% endif %}
+                {% if gallery_4 %}
+                <img data-aos="fade-up" data-aos-delay="300" src="{{ gallery_4.image.url }}" alt="{{ gallery_4.title }}"
+                    class="w-full max-md:h-64 max-md:object-cover max-md:rounded-lg md:mb-[-65px] md:mt-[30px] md:w-auto">
+                {% endif %}
+                {% if gallery_5 %}
+                <img data-aos="fade-up" data-aos-delay="400" src="{{ gallery_5.image.url }}" alt="{{ gallery_5.title }}"
+                    class="w-full max-md:h-64 max-md:object-cover max-md:rounded-lg md:mb-[-55px] md:mt-[-70px] md:w-auto">
+                {% endif %}
+                {% if gallery_6 %}
+                <img data-aos="fade-up" data-aos-delay="500" src="{{ gallery_6.image.url }}" alt="{{ gallery_6.title }}"
+                    class="w-full max-md:h-64 max-md:object-cover max-md:rounded-lg md:w-auto">
+                {% endif %}
+                {% if gallery_7 %}
+                <img data-aos="fade-up" data-aos-delay="600" src="{{ gallery_7.image.url }}" alt="{{ gallery_7.title }}"
+                    class="w-full max-md:h-64 max-md:object-cover max-md:rounded-lg md:mb-[80px] md:w-auto">
+                {% endif %}
+                {% if gallery_8 %}
+                <img data-aos="fade-up" data-aos-delay="700" src="{{ gallery_8.image.url }}" alt="{{ gallery_8.title }}"
+                    class="w-full max-md:h-64 max-md:object-cover max-md:rounded-lg md:mt-[-70px] md:w-auto">
+                {% endif %}
+                {% if gallery_9 %}
+                <img data-aos="fade-up" data-aos-delay="800" src="{{ gallery_9.image.url }}" alt="{{ gallery_9.title }}"
+                    class="w-full max-md:h-64 max-md:object-cover max-md:rounded-lg md:mt-[65px] md:mb-[16px] md:w-auto">
+                {% endif %}
+                {% if gallery_10 %}
+                <img data-aos="fade-up" data-aos-delay="900" src="{{ gallery_10.image.url }}" alt="{{ gallery_10.title }}"
+                    class="w-full max-md:h-64 max-md:object-cover max-md:rounded-lg md:mt-[65px] md:mb-[16px] md:w-auto">
+                {% endif %}
+            </div>
+        </section>
+        {% endif %}
+        {% if press and press_items %}
+        <section class="bg-[#564F40] py-16 md:py-30">
+            <div class="max-w-[1300px] mx-auto grid grid-cols-1 md:grid-cols-2 px-6 md:px-0">
+                <img data-aos="fade-up" src="{{ press.image.url }}" alt="{{ press.title }}" class="order-2 w-full md:order-1 rounded-[25px]">
+                <div data-aos="fade-up" data-aos-delay="100"
+                    class="relative order-1 w-full h-full px-0 pt-6 mb-8 md:pt-8 md:pl-14 md:order-2 md:mb-0">
+                    <h2 class="text-white text-3xl md:text-[54px] font-bold mb-8 md:mb-[74px]">{{ press.title }}</h2>
+                    <div class="space-y-4 md:space-y-6">
+                        {% for item in press_items %}
+                        <div>
+                            <h3 class="font-bold text-lg md:text-[24px] mb-2 md:mb-3 text-white">{{ item.title }}</h3>
+                            <p class="text-white/70 leading-[140%] text-sm md:text-base">{{ item.description|linebreaksbr }}</p>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <a href="{% url 'about' %}"
+                        class="flex items-center justify-center border border-white w-12 h-12 md:w-15 md:h-15 mt-8 md:mt-0 md:absolute md:top-[90px] md:right-0 cursor-pointer hover:bg-white hover:border-white group transition-all duration-300">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor"
+                            class="size-6 md:size-8 text-white group-hover:text-[#564F40] font-bold transition-all duration-300 ease-in-out">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="m4.5 19.5 15-15m0 0H8.25m11.25 0v11.25" />
+                        </svg>
+                    </a>
+                </div>
+            </div>
+        </section>
+        {% endif %}
+        {% if architects %}
+        <section class="bg-[#2C2926] py-16 md:py-30">
+            <div class="grid grid-cols-1 md:grid-cols-2 max-w-[1300px] mx-auto px-6 md:px-0">
+                <h2 data-aos="fade-up" class="text-white text-3xl md:text-[50px] font-bold mb-6 md:mb-0">Наши
+                    архитекторы</h2>
+                    <a href="{% url 'architects' %}" data-aos="fade-up" data-aos-delay="100"
+                    class="flex items-center justify-start gap-6 cursor-pointer md:justify-end md:gap-10 group">
+                    <p
+                        class="text-lg md:text-xl font-medium text-white group-hover:text-[#564F40] md:pl-[115px] transition-all duration-300 ease-in-out">
+                        Команда профессионалов для <br class="hidden md:block">
+                        реализации ваших идей
+                    </p>
+                    <div
+                        class="border border-white group-hover:border-[#564F40] transition-all duration-300 ease-in-out rounded-[8px] p-2 flex items-center justify-center flex-shrink-0">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor"
+                            class="size-6 md:size-8 text-white group-hover:text-[#564F40] font-bold transition-all duration-300 ease-in-out">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="m4.5 19.5 15-15m0 0H8.25m11.25 0v11.25" />
+                        </svg>
+                    </div>
+                </a>
+            </div>
+
+            <div class="flex gap-4 md:gap-8 px-6 md:pl-[70px] overflow-x-auto scrollbar-hide pt-8 md:pt-11 pb-4">
+                {% for architect in architects %}
+                <div data-aos="fade-up" {% if not forloop.first %}data-aos-delay="{{ forloop.counter0|add:1|add:0|add:0 }}"{% endif %}
+                    class="group relative flex-shrink-0 flex flex-col w-[280px] md:w-[324px]">
+                    <div
+                        class="flex flex-col bg-white rounded-[8px] transition-all duration-300 ease-in-out hover:-translate-y-2 md:hover:-translate-y-6 mb-6">
+
+                        <img src="{{ architect.photo.url }}" alt="{{ architect.name }}"
+                            class="w-full h-[320px] md:h-[380px] rounded-t-[8px] transition-all duration-300 ease-in-out group-hover:rounded-none object-cover" />
+
+                        <div
+                            class="px-4 md:px-5 py-4 md:py-6 transition-colors duration-300 ease-in-out group-hover:bg-[#564F40] rounded-b-[8px]">
+                            <h2
+                                class="text-[#291F1E] mb-3 md:mb-[14px] text-lg md:text-xl font-bold transition-colors duration-300 ease-in-out group-hover:text-white">
+                                {{ architect.name }}{% if architect.position %} - {{ architect.position }}{% endif %}
+                            </h2>
+                            <p
+                                class="leading-[140%] text-sm md:text-base text-[#291f1eac] transition-colors duration-300 ease-in-out group-hover:text-white/70">
+                                {{ architect.description|truncatewords:15 }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+        {% endif %}
+        {% endblock %}
+
+    </main>
+    <footer class="bg-[#2C2926] pt-10 md:pt-14 pb-6 md:pb-8 border-t border-t-white/20">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-[1300px] mx-auto px-6 md:px-0">
+            <div class="flex flex-col items-start">
+                <a href="/" class="cursor-pointer">
+                    <img src="{% static 'imgs/logo.svg' %}" alt="ENGLER HOUSE" class="h-10 md:h-12 transition-opacity duration-300 hover:opacity-70">
+                </a>
+                <p class="text-base md:text-lg text-[#FFFFFF80] mt-4 md:mt-6 pr-0 md:pr-10">Создаем уникальные интерьеры,
+                    которые отражают вашу индивидуальность</p>
+            </div>
+            <div class="flex flex-col">
+                <h4 class="mb-6 text-lg font-bold text-white md:text-xl md:mb-11">Навигация</h4>
+                <div class="grid grid-cols-2 gap-x-8 gap-y-4 md:gap-y-7">
+                    <a class="text-sm text-white md:text-base transition-colors duration-300 hover:text-[#564F40]" href="/">Главная</a>
+                    <a class="text-sm text-white md:text-base transition-colors duration-300 hover:text-[#564F40]" href="{% url 'architects' %}">Архитекторы</a>
+                    <a class="text-sm text-white md:text-base transition-colors duration-300 hover:text-[#564F40]" href="{% url 'services' %}">Услуги</a>
+                    <a class="text-sm text-white md:text-base transition-colors duration-300 hover:text-[#564F40]" href="{% url 'about' %}">Пресса о нас</a>
+                    <a class="text-sm text-white md:text-base transition-colors duration-300 hover:text-[#564F40]" href="{% url 'projects' %}">Проекты</a>
+                    <a class="text-sm text-white md:text-base transition-colors duration-300 hover:text-[#564F40]" href="{% url 'contact' %}">Контакты</a>
+                </div>
+            </div>
+            <div class="flex flex-col">
+                <h4 class="mb-6 text-lg font-bold text-white md:text-xl md:mb-11">Помощь</h4>
+                <a class="mb-4 text-sm text-white md:mb-7 md:text-base transition-colors duration-300 hover:text-[#564F40]" href="#">Политика <br
+                        class="hidden md:block"> конфиденциальности</a>
+            </div>
+        </div>
+        <div
+            class="border-t border-white/20 max-w-[1300px] mx-auto mt-6 md:mt-6 flex flex-col md:flex-row justify-between pt-6 md:pt-8 px-6 md:px-0">
+            <p class="mb-4 text-sm text-center text-white md:text-base md:text-left md:mb-0">© 2025 Все права защищены.
+                Engler House</p>
+            <a class="text-sm text-center text-white md:text-base md:text-right transition-colors duration-300 hover:text-[#564F40]" href="#">Правила и условия | Политика
+                конфиденциальности</a>
+        </div>
+    </footer>
+
+    <!-- Floating Feedback Button -->
+    <button onclick="openFeedbackModal()"
+        class="fixed bottom-6 right-6 z-50 p-4 md:p-5 bg-[#564F40] hover:bg-[#291F1E] text-white rounded-full shadow-lg transition-all duration-300 ease-in-out hover:scale-110 flex items-center gap-3 group">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+            stroke="currentColor" class="size-6">
+            <path stroke-linecap="round" stroke-linejoin="round"
+                d="M8.625 12a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H12m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 0 1-2.555-.337A5.972 5.972 0 0 1 5.41 20.97a5.969 5.969 0 0 1-.474-.065 4.48 4.48 0 0 0 .978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25Z" />
+        </svg>
+        <span class="hidden md:inline-block font-bold text-sm whitespace-nowrap">Обратная связь</span>
+    </button>
+
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="{% static 'js/app.js' %}"></script>
+    
+    <script>
+        // Handle feedback form submission
+        document.addEventListener('DOMContentLoaded', function() {
+            const feedbackForm = document.getElementById('feedbackForm');
+            if (feedbackForm) {
+                feedbackForm.addEventListener('submit', async function(e) {
+                    e.preventDefault();
+                    
+                    const submitBtn = document.getElementById('feedbackSubmitBtn');
+                    const btnText = document.getElementById('feedbackBtnText');
+                    const messageDiv = document.getElementById('feedbackMessage');
+                    
+                    // Get form data
+                    const formData = {
+                        name: document.getElementById('feedbackName').value.trim(),
+                        email: document.getElementById('feedbackEmail').value.trim(),
+                        phone: document.getElementById('feedbackPhone').value.trim()
+                    };
+                    
+                    // Disable button and show loading
+                    submitBtn.disabled = true;
+                    btnText.textContent = 'Отправка...';
+                    messageDiv.classList.add('hidden');
+                    
+                    try {
+                        const response = await fetch('/api/submit-zayavka/', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify(formData)
+                        });
+                        
+                        const data = await response.json();
+                        
+                        if (data.success) {
+                            // Show success message
+                            messageDiv.className = 'mb-4 p-3 rounded-lg text-sm font-medium bg-green-100 text-green-800 border border-green-300';
+                            messageDiv.textContent = data.message;
+                            messageDiv.classList.remove('hidden');
+                            
+                            // Reset form
+                            feedbackForm.reset();
+                            
+                            // Close modal after 2 seconds
+                            setTimeout(() => {
+                                closeFeedbackModal();
+                                messageDiv.classList.add('hidden');
+                            }, 2000);
+                        } else {
+                            // Show error message
+                            messageDiv.className = 'mb-4 p-3 rounded-lg text-sm font-medium bg-red-100 text-red-800 border border-red-300';
+                            messageDiv.textContent = data.message;
+                            messageDiv.classList.remove('hidden');
+                        }
+                    } catch (error) {
+                        console.error('Error:', error);
+                        messageDiv.className = 'mb-4 p-3 rounded-lg text-sm font-medium bg-red-100 text-red-800 border border-red-300';
+                        messageDiv.textContent = 'Произошла ошибка. Пожалуйста, попробуйте позже.';
+                        messageDiv.classList.remove('hidden');
+                    } finally {
+                        // Re-enable button
+                        submitBtn.disabled = false;
+                        btnText.textContent = 'Отправить';
+                    }
+                });
+            }
+        });
+    </script>
+    
+    {% block extra_js %}{% endblock %}
+</body>
+
+</html>
