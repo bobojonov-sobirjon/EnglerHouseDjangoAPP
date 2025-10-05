@@ -158,7 +158,7 @@ DEFAULT_FROM_EMAIL = 'sobirbobojonov2000@gmail.com'  # Change to your email
 
 
 # Site URL for email links
-SITE_URL = 'http://127.0.0.1:8000'
+SITE_URL = 'http://45.147.177.211:8050'
 
 # Login/Logout URLs
 LOGIN_URL = '/accounts/login/'
