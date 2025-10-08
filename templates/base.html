@@ -64,21 +64,22 @@
                             <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-[#564F40] transition-all duration-300 group-hover:w-full"></span>
                         </a> 
                     </li>
-                    {% if user.is_authenticated %}
-                    <li class="cursor-pointer group"> 
-                        <a href="{% url 'my_projects' %}" class="relative pb-1 transition-colors duration-300 hover:text-[#564F40]">
-                            Мои проекты
-                            <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-[#564F40] transition-all duration-300 group-hover:w-full"></span>
-                        </a> 
-                    </li>
-                    {% endif %}
                 </ul>
 
                 {% if user.is_authenticated %}
-                <a href="{% url 'profile' %}"
-                    class="border border-[#291F1E] py-2 px-4 rounded-[8px] text-sm font-bold cursor-pointer hover:bg-[#291F1E] hover:text-white transition-colors duration-300">
-                    Личный кабинет
-                </a>
+                <div class="flex items-center gap-3">
+                    <a href="{% url 'profile' %}"
+                        class="border border-[#291F1E] py-2 px-4 rounded-[8px] text-sm font-bold cursor-pointer hover:bg-[#291F1E] hover:text-white transition-colors duration-300">
+                        Личный кабинет
+                    </a>
+                    <a href="{% url 'logout' %}"
+                        class="p-2 border border-[#291F1E] rounded-[8px] cursor-pointer hover:bg-[#291F1E] hover:text-white transition-colors duration-300 group"
+                        title="Выйти">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-[#291F1E] group-hover:text-white">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15M12 9l-3 3m0 0 3 3m-3-3h12.75" />
+                        </svg>
+                    </a>
+                </div>
                 {% else %}
                 <a href="{% url 'login' %}"
                     class="border border-[#291F1E] py-2 px-4 rounded-[8px] text-sm font-bold cursor-pointer hover:bg-[#291F1E] hover:text-white transition-colors duration-300">
@@ -131,18 +132,22 @@
                     <li class="py-2 border-b border-gray-200 cursor-pointer">
                         <a href="{% url 'contact' %}" class="block transition-all duration-300 hover:text-[#564F40] hover:pl-2">Контакты</a>
                     </li>
-                    {% if user.is_authenticated %}
-                    <li class="py-2 border-b border-gray-200 cursor-pointer">
-                        <a href="{% url 'my_projects' %}" class="block transition-all duration-300 hover:text-[#564F40] hover:pl-2">Мои проекты</a>
-                    </li>
-                    {% endif %}
                 </ul>
 
                 {% if user.is_authenticated %}
-                <a href="{% url 'profile' %}"
-                    class="border border-[#291F1E] py-3 px-4 rounded-[8px] text-sm font-bold cursor-pointer mt-4 block text-center hover:bg-[#291F1E] hover:text-white transition-colors duration-300">
-                    Личный кабинет
-                </a>
+                <div class="flex flex-col gap-3 mt-4">
+                    <a href="{% url 'profile' %}"
+                        class="border border-[#291F1E] py-3 px-4 rounded-[8px] text-sm font-bold cursor-pointer text-center hover:bg-[#291F1E] hover:text-white transition-colors duration-300">
+                        Личный кабинет
+                    </a>
+                    <a href="{% url 'logout' %}"
+                        class="flex items-center justify-center gap-2 border border-[#291F1E] py-3 px-4 rounded-[8px] text-sm font-bold cursor-pointer hover:bg-[#291F1E] hover:text-white transition-colors duration-300">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15M12 9l-3 3m0 0 3 3m-3-3h12.75" />
+                        </svg>
+                        Выйти
+                    </a>
+                </div>
                 {% else %}
                 <a href="{% url 'login' %}"
                     class="border border-[#291F1E] py-3 px-4 rounded-[8px] text-sm font-bold cursor-pointer mt-4 block text-center hover:bg-[#291F1E] hover:text-white transition-colors duration-300">

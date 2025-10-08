@@ -6,6 +6,7 @@ from django.views.decorators.csrf import csrf_protect
 from django.contrib.auth import get_user_model
 from django.http import JsonResponse
 from django.core.exceptions import ValidationError
+from apps.website.models import Order
 
 User = get_user_model()
 
@@ -70,5 +71,40 @@ def profile_view(request):
     
         return render(request, 'pages/profile.html', {'user': request.user})
     
+    if request.user.is_authenticated:
+        orders = Order.objects.filter(user=request.user).order_by('-created_at')
+    else:
+        # For demo purposes show all if not authenticated
+        # In production you should redirect to login
+        orders = Order.objects.all().order_by('-created_at')
+    
+    # Prepare Gantt chart data for each order
+    for order in orders:
+        tasks = order.tasks.all()
+        
+        # Calculate timeline
+        if tasks.exists():
+            min_date = min(task.start_date for task in tasks)
+            max_date = max(task.end_date for task in tasks)
+            total_days = (max_date - min_date).days + 1
+            
+            for task in tasks:
+                # Calculate position and width for Gantt bar
+                days_from_start = (task.start_date - min_date).days
+                task_duration = (task.end_date - task.start_date).days + 1
+                
+                task.position_percent = (days_from_start / total_days) * 100
+                task.width_percent = (task_duration / total_days) * 100
+            
+            order.task_list = tasks
+            order.timeline_start = min_date
+            order.timeline_end = max_date
+            order.total_duration_days = total_days
+        else:
+            order.task_list = []
+            order.timeline_start = order.start_date
+            order.timeline_end = order.end_date
+            order.total_duration_days = (order.end_date - order.start_date).days + 1
+    
     # GET request - just show the profile page
-    return render(request, 'pages/profile.html', {'user': request.user})
+    return render(request, 'pages/profile.html', {'user': request.user, 'orders': orders})
