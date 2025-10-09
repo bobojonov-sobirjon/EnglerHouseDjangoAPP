@@ -222,6 +222,11 @@ def submit_zayavka(request):
     }, status=405)
 
 
+def tour_3d(request):
+    """3D tour page view"""
+    return render(request, '3d_tour/tour.html')
+
+
 def my_projects(request):
     """My projects page with order tracking and Gantt chart"""
     # Filter orders by current user

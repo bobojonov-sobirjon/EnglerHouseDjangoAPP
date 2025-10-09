@@ -12,4 +12,5 @@ urlpatterns = [
     path('contact/', views.contact, name='contact'),
     path('my-projects/', views.my_projects, name='my_projects'),
     path('api/submit-zayavka/', views.submit_zayavka, name='submit_zayavka'),
+    path('3d-tour/', views.tour_3d, name='3d_tour'),
 ]
